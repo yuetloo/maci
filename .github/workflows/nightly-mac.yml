@@ -1,0 +1,67 @@
+name: Nightly MacOS e2e
+
+on:
+  push:
+
+jobs:
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        command: ["test:cli", "test:integration"]
+
+    runs-on: macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: |
+          brew install cmake gmp libsodium nasm nlohmann-json
+
+      - name: Install
+        run: |
+          pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Run hardhat fork
+        run: |
+          cd contracts
+          pnpm run hardhat &
+          sleep 5
+
+      - name: Download rapidsnark (1c137)
+        run: |
+          mkdir -p ~/rapidsnark/build
+          wget -qO ~/rapidsnark/build/prover https://maci-devops-zkeys.s3.ap-northeast-2.amazonaws.com/rapidsnark-linux-amd64-1c137
+          chmod +x ~/rapidsnark/build/prover
+
+      - name: Download circom Binary v2.1.6
+        run: |
+          wget -qO ${{ github.workspace }}/circom https://github.com/iden3/circom/releases/download/v2.1.6/circom-macos-amd64
+          chmod +x ${{ github.workspace }}/circom
+
+      - name: Compile Circuits And Generate zkeys
+        run: |
+          export PATH=$PATH:${{ github.workspace }}/
+          pnpm build:circuits-c
+          pnpm setup:zkeys
+
+      - name: ${{ matrix.command }}
+        run: pnpm run ${{ matrix.command }}
+
+      - name: Stop Hardhat
+        if: always()
+        run: kill $(lsof -t -i:8545)
