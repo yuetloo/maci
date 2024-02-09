@@ -266,7 +266,9 @@ export class ProofGenerator {
 
     let tallyCircuitInputs: CircuitInputs;
     while (this.poll.hasUntalliedBallots()) {
-      tallyCircuitInputs = this.poll.tallyVotes(this.useQuadraticVoting) as unknown as CircuitInputs;
+      tallyCircuitInputs = (this.useQuadraticVoting
+        ? this.poll.tallyVotes()
+        : this.poll.tallyVotesNonQv()) as unknown as CircuitInputs;
 
       // eslint-disable-next-line no-await-in-loop
       await this.generateProofs(tallyCircuitInputs, this.tally, `tally_${this.poll.numBatchesTallied - 1}.json`).then(

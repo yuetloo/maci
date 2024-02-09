@@ -57,6 +57,7 @@ program
   .option("-g, --signupGatekeeperAddress <signupGatekeeperAddress>", "the signup gatekeeper contract address")
   .option("-q, --quiet <quiet>", "whether to print values to the console", (value) => value === "true", false)
   .option("-r, --rpc-provider <provider>", "the rpc provider URL")
+  .option("-uq, --use-quadratic-voting", "whether to use quadratic voting", (value) => value === "true", true)
   .requiredOption("-s, --stateTreeDepth <stateTreeDepth>", "the state tree depth", parseInt)
   .action(async (cmdOptions) => {
     try {
@@ -71,6 +72,7 @@ program
         poseidonT4Address: cmdOptions.poseidonT4Address,
         poseidonT5Address: cmdOptions.poseidonT5Address,
         poseidonT6Address: cmdOptions.poseidonT6Address,
+        useQv: cmdOptions.useQuadraticVoting,
         quiet: cmdOptions.quiet,
         signer,
       });
@@ -466,6 +468,7 @@ program
   .option("-sc, --subsidy-contract <subsidyContract>", "the subsidy contract address")
   .option("-q, --quiet <quiet>", "whether to print values to the console", (value) => value === "true", false)
   .option("-r, --rpc-provider <provider>", "the rpc provider URL")
+  .option("-uq, --use-quadratic-voting", "whether to use quadratic voting", (value) => value === "true", true)
   .action(async (cmdObj) => {
     try {
       const signer = await getSigner();
@@ -502,6 +505,7 @@ program
         subsidyData,
         quiet: cmdObj.quiet,
         signer,
+        useQv: cmdObj.useQuadraticVoting,
       });
     } catch (error) {
       program.error((error as Error).message, { exitCode: 1 });
