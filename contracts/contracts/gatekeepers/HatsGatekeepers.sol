@@ -5,7 +5,7 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { SignUpGatekeeper } from "./SignUpGatekeeper.sol";
 
 interface IHats {
-  function isWearerOfHat(address account, uint256 hat) public view returns (bool);
+  function isWearerOfHat(address account, uint256 hat) external view returns (bool);
 }
 
 // custom errors
@@ -40,8 +40,7 @@ contract HatsGatekeeperSimple is SignUpGatekeeper, Ownable {
 
   /// @notice Registers the user
   /// @param _user The address of the user
-  /// @param _data additional data // only need this if we're allowing multiple hats
-  function register(address _user, bytes memory /*_data*/) public virtual {
+  function register(address _user, bytes memory /*_data*/) public override {
     // ensure that the caller is the MACI contract
     if (maci != msg.sender) revert OnlyMACI();
 
@@ -78,7 +77,7 @@ contract HatsGatekeeperWithOwnerHat is SignUpGatekeeper {
     //////////////////////////////////////////////////////////////*/
 
   /// @notice Allows to set the MACI contract
-  function setMaciInstance(address _maci) public override onlyOwner {
+  function setMaciInstance(address _maci) public override {
     _checkOwner(msg.sender);
     maci = _maci;
   }
@@ -98,8 +97,7 @@ contract HatsGatekeeperWithOwnerHat is SignUpGatekeeper {
 
   /// @notice Registers the user
   /// @param _user The address of the user
-  /// @param _data additional data // only need this if we're allowing multiple hats
-  function register(address _user, bytes memory /*_data*/) public virtual {
+  function register(address _user, bytes memory /*_data*/) public override {
     // ensure that the caller is the MACI contract
     if (maci != msg.sender) revert OnlyMACI();
 
@@ -113,7 +111,7 @@ contract HatsGatekeeperMultiple is SignUpGatekeeper {
   IHats public immutable hats;
 
   /// @notice Tracks hats that users must wear to be eligible to register
-  mapping(uint256 hat => bool criterion) public criterionHat;
+  mapping(uint256 => bool) public criterionHat;
 
   /// @notice The hat defining the owner of this contract
   uint256 public ownerHat;
@@ -125,7 +123,7 @@ contract HatsGatekeeperMultiple is SignUpGatekeeper {
   /// @param _hats The Hats Protocol contract
   /// @param _criterionHats Array of accepted criterion hats
   /// @param _ownerHat The hat defining the owner of this contract
-  constructor(address _hats, uint256[] calldata _criterionHats, uint256 _ownerHat) payable {
+  constructor(address _hats, uint256[] memory _criterionHats, uint256 _ownerHat) payable {
     hats = IHats(_hats);
     ownerHat = _ownerHat;
     _addCriterionHats(_criterionHats);
@@ -136,7 +134,7 @@ contract HatsGatekeeperMultiple is SignUpGatekeeper {
     //////////////////////////////////////////////////////////////*/
 
   /// @notice Allows to set the MACI contract
-  function setMaciInstance(address _maci) public override onlyOwner {
+  function setMaciInstance(address _maci) public override {
     _checkOwner(msg.sender);
     maci = _maci;
   }
@@ -146,12 +144,12 @@ contract HatsGatekeeperMultiple is SignUpGatekeeper {
     ownerHat = _newOwnerHat;
   }
 
-  function addCriterionHats(uint256[] calldata _criterionHats) public {
+  function addCriterionHats(uint256[] memory _criterionHats) public {
     _checkOwner(msg.sender);
     _addCriterionHats(_criterionHats);
   }
 
-  function _addCriterionHats(uint256[] calldata _criterionHats) internal {
+  function _addCriterionHats(uint256[] memory _criterionHats) internal {
     for (uint256 i; i < _criterionHats.length; ++i) {
       criterionHat[_criterionHats[i]] = true;
     }
@@ -168,7 +166,7 @@ contract HatsGatekeeperMultiple is SignUpGatekeeper {
   /// @notice Registers the user
   /// @param _user The address of the user
   /// @param _data additional data
-  function register(address _user, bytes memory _data) public virtual {
+  function register(address _user, bytes memory _data) public override {
     // ensure that the caller is the MACI contract
     if (maci != msg.sender) revert OnlyMACI();
 
