@@ -9,45 +9,20 @@ describe("Poseidon hash circuits", function test() {
   this.timeout(30000);
 
   describe("SHA256", () => {
-    describe("Sha256HashLeftRight", () => {
-      let circuit: WitnessTester<["left", "right"], ["hash"]>;
-
-      before(async () => {
-        circuit = await circomkitInstance.WitnessTester("sha256HashLeftRight", {
-          file: "hasherSha256",
-          template: "Sha256HashLeftRight",
-        });
-      });
-
-      it("should correctly hash two random values", async () => {
-        const left = genRandomSalt();
-        const right = genRandomSalt();
-
-        const circuitInputs = { left, right };
-
-        const witness = await circuit.calculateWitness(circuitInputs);
-        await circuit.expectConstraintPass(witness);
-        const output = await getSignal(circuit, witness, "hash");
-
-        const outputJS = sha256Hash([left, right]);
-
-        expect(output.toString()).to.be.eq(outputJS.toString());
-      });
-    });
-
-    describe("Sha256Hasher4", () => {
+    describe("Sha256Hasher", () => {
       let circuit: WitnessTester<["in"], ["hash"]>;
 
-      before(async () => {
-        circuit = await circomkitInstance.WitnessTester("sha256Hasher4", {
-          file: "hasherSha256",
-          template: "Sha256Hasher4",
-        });
-      });
+      it("correctly hashes 2 random values in order", async () => {
+        const n = 2;
 
-      it("should correctly hash 4 random values", async () => {
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
+        });
+
         const preImages: bigint[] = [];
-        for (let i = 0; i < 4; i += 1) {
+        for (let i = 0; i < n; i += 1) {
           preImages.push(genRandomSalt());
         }
 
@@ -63,21 +38,126 @@ describe("Poseidon hash circuits", function test() {
 
         expect(output.toString()).to.be.eq(outputJS.toString());
       });
-    });
 
-    describe("Sha256Hasher6", () => {
-      let circuit: WitnessTester<["in"], ["hash"]>;
+      it("correctly hashes 3 random values", async () => {
+        const n = 3;
 
-      before(async () => {
-        circuit = await circomkitInstance.WitnessTester("sha256Hasher6", {
-          file: "hasherSha256",
-          template: "Sha256Hasher6",
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
         });
+
+        const preImages: bigint[] = [];
+        for (let i = 0; i < n; i += 1) {
+          preImages.push(genRandomSalt());
+        }
+
+        const circuitInputs = {
+          in: preImages,
+        };
+
+        const witness = await circuit.calculateWitness(circuitInputs);
+        await circuit.expectConstraintPass(witness);
+        const output = await getSignal(circuit, witness, "hash");
+
+        const outputJS = sha256Hash(preImages);
+
+        expect(output.toString()).to.be.eq(outputJS.toString());
       });
 
-      it("should correctly hash 6 random values", async () => {
+      it("correctly hashes 4 random values", async () => {
+        const n = 4;
+
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
+        });
+
         const preImages: bigint[] = [];
-        for (let i = 0; i < 6; i += 1) {
+        for (let i = 0; i < n; i += 1) {
+          preImages.push(genRandomSalt());
+        }
+
+        const circuitInputs = {
+          in: preImages,
+        };
+
+        const witness = await circuit.calculateWitness(circuitInputs);
+        await circuit.expectConstraintPass(witness);
+        const output = await getSignal(circuit, witness, "hash");
+
+        const outputJS = sha256Hash(preImages);
+
+        expect(output.toString()).to.be.eq(outputJS.toString());
+      });
+
+      it("correctly hashes 5 random values", async () => {
+        const n = 5;
+
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
+        });
+
+        const preImages: bigint[] = [];
+        for (let i = 0; i < n; i += 1) {
+          preImages.push(genRandomSalt());
+        }
+
+        const circuitInputs = {
+          in: preImages,
+        };
+
+        const witness = await circuit.calculateWitness(circuitInputs);
+        await circuit.expectConstraintPass(witness);
+        const output = await getSignal(circuit, witness, "hash");
+
+        const outputJS = sha256Hash(preImages);
+
+        expect(output.toString()).to.be.eq(outputJS.toString());
+      });
+
+      it("correctly hashes 6 random values", async () => {
+        const n = 6;
+
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
+        });
+
+        const preImages: bigint[] = [];
+        for (let i = 0; i < n; i += 1) {
+          preImages.push(genRandomSalt());
+        }
+
+        const circuitInputs = {
+          in: preImages,
+        };
+
+        const witness = await circuit.calculateWitness(circuitInputs);
+        await circuit.expectConstraintPass(witness);
+        const output = await getSignal(circuit, witness, "hash");
+
+        const outputJS = sha256Hash(preImages);
+
+        expect(output.toString()).to.be.eq(outputJS.toString());
+      });
+
+      it("correctly hashes 10 random values", async () => {
+        const n = 10;
+
+        circuit = await circomkitInstance.WitnessTester("sha256hasher", {
+          file: "hashers",
+          template: "Sha256Hasher",
+          params: [n],
+        });
+
+        const preImages: bigint[] = [];
+        for (let i = 0; i < n; i += 1) {
           preImages.push(genRandomSalt());
         }
 
@@ -97,15 +177,15 @@ describe("Poseidon hash circuits", function test() {
   });
 
   describe("Poseidon", () => {
-    describe("PoseidonHash", () => {
+    describe("PoseidonHasher", () => {
       let circuit: WitnessTester<["inputs"], ["out"]>;
 
       it("correctly hashes 2 random values in order", async () => {
         const n = 2;
 
-        circuit = await circomkitInstance.WitnessTester("poseidonHash", {
-          file: "poseidonHash",
-          template: "PoseidonHash",
+        circuit = await circomkitInstance.WitnessTester("poseidonHasher", {
+          file: "hashers",
+          template: "PoseidonHasher",
           params: [n],
         });
 
@@ -130,9 +210,9 @@ describe("Poseidon hash circuits", function test() {
       it("correctly hashes 3 random values", async () => {
         const n = 3;
 
-        circuit = await circomkitInstance.WitnessTester("poseidonHash", {
-          file: "poseidonHash",
-          template: "PoseidonHash",
+        circuit = await circomkitInstance.WitnessTester("poseidonHasher", {
+          file: "hashers",
+          template: "PoseidonHasher",
           params: [n],
         });
 
@@ -157,9 +237,9 @@ describe("Poseidon hash circuits", function test() {
       it("correctly hashes 4 random values", async () => {
         const n = 4;
 
-        circuit = await circomkitInstance.WitnessTester("poseidonHash", {
-          file: "poseidonHash",
-          template: "PoseidonHash",
+        circuit = await circomkitInstance.WitnessTester("poseidonHasher", {
+          file: "hashers",
+          template: "PoseidonHasher",
           params: [n],
         });
 
@@ -184,9 +264,9 @@ describe("Poseidon hash circuits", function test() {
       it("correctly hashes 5 random values", async () => {
         const n = 5;
 
-        circuit = await circomkitInstance.WitnessTester("poseidonHash", {
-          file: "poseidonHash",
-          template: "PoseidonHash",
+        circuit = await circomkitInstance.WitnessTester("poseidonHasher", {
+          file: "hashers",
+          template: "PoseidonHasher",
           params: [n],
         });
 
@@ -215,7 +295,7 @@ describe("Poseidon hash circuits", function test() {
 
     before(async () => {
       circuit = await circomkitInstance.WitnessTester("messageHasher", {
-        file: "messageHasher",
+        file: "hashers",
         template: "MessageHasher",
       });
     });

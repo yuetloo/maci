@@ -1,7 +1,7 @@
 pragma circom 2.0.0;
 
 // local import
-include "../poseidonHash.circom";
+include "../hashers.circom";
 
 // Given a list of leaves, compute the root of the merkle tree
 // by inserting all the leaves into the tree in the given
@@ -35,7 +35,7 @@ template QuinCheckRoot(levels) {
 
     // Wire the leaf values into the leaf hashers
     for (i = 0; i < numLeafHashers; i++){
-        hashers[i] = PoseidonHash(5)([
+        hashers[i] = PoseidonHasher(5)([
             leaves[i*LEAVES_PER_NODE+0],
             leaves[i*LEAVES_PER_NODE+1],
             leaves[i*LEAVES_PER_NODE+2],
@@ -47,7 +47,7 @@ template QuinCheckRoot(levels) {
     // Wire the outputs of the leaf hashers to the intermediate hasher inputs
     var k = 0;
     for (i = numLeafHashers; i < numHashers; i++) {
-        hashers[i] = PoseidonHash(5)([
+        hashers[i] = PoseidonHasher(5)([
             hashers[k*LEAVES_PER_NODE+0],
             hashers[k*LEAVES_PER_NODE+1],
             hashers[k*LEAVES_PER_NODE+2],
