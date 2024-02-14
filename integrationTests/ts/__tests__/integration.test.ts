@@ -336,36 +336,32 @@ describe("Integration tests", function test() {
       }
 
       // prove on chain if everything matches
-      await expect(
-        proveOnChain({
-          pollId,
-          proofDir: path.resolve(__dirname, "../../../cli/proofs"),
-          subsidyEnabled,
-          maciAddress: contracts.maciAddress,
-          messageProcessorAddress: pollContracts.messageProcessor,
-          tallyAddress: pollContracts.tally,
-          subsidyAddress: pollContracts.subsidy,
-          signer,
-        }),
-      ).to.eventually.not.rejectedWith();
+      proveOnChain({
+        pollId,
+        proofDir: path.resolve(__dirname, "../../../cli/proofs"),
+        subsidyEnabled,
+        maciAddress: contracts.maciAddress,
+        messageProcessorAddress: pollContracts.messageProcessor,
+        tallyAddress: pollContracts.tally,
+        subsidyAddress: pollContracts.subsidy,
+        signer,
+      });
 
       // verify the proofs
-      await expect(
-        verify({
-          pollId,
-          subsidyEnabled,
-          tallyData,
-          maciAddress: contracts.maciAddress,
-          tallyAddress: pollContracts.tally,
-          subsidyAddress: pollContracts.subsidy,
-          subsidyData: subsidyEnabled
-            ? (JSON.parse(
-                fs.readFileSync(path.resolve(__dirname, "../../../cli/subsidy.json")).toString(),
-              ) as SubsidyData)
-            : undefined,
-          signer,
-        }),
-      ).to.eventually.not.rejectedWith();
+      verify({
+        pollId,
+        subsidyEnabled,
+        tallyData,
+        maciAddress: contracts.maciAddress,
+        tallyAddress: pollContracts.tally,
+        subsidyAddress: pollContracts.subsidy,
+        subsidyData: subsidyEnabled
+          ? (JSON.parse(
+              fs.readFileSync(path.resolve(__dirname, "../../../cli/subsidy.json")).toString(),
+            ) as SubsidyData)
+          : undefined,
+        signer,
+      });
     });
   });
 });
