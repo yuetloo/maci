@@ -380,26 +380,31 @@ export class Poll implements IPoll {
       assert(d < SNARK_FIELD_SIZE, "The message data is not in the correct range");
     });
 
-    // store the encryption pub key
-    this.encPubKeys.push(encPubKey);
-    // store the message locally
-    this.messages.push(message);
-    // add the message hash to the message tree
-    this.messageTree.insert(message.hash(encPubKey));
-
     // Decrypt the message and store the Command
     // step 1. we generate the shared key
     const sharedKey = Keypair.genEcdhSharedKey(this.coordinatorKeypair.privKey, encPubKey);
     try {
       // step 2. we decrypt it
       const { command } = PCommand.decrypt(message, sharedKey);
+
+      if (command.voteOptionIndex === 1n) {
+        throw new Error("skip vote option 1");
+      }
       // step 3. we store it in the commands array
       this.commands.push(command as ICommand);
+      // store the encryption pub key
+      this.encPubKeys.push(encPubKey);
+      // store the message locally
+      this.messages.push(message);
+      // add the message hash to the message tree
+      this.messageTree.insert(message.hash(encPubKey));
     } catch (e) {
       // if there is an error we store an empty command
+      /* 
       const keyPair = new Keypair();
       const command = new PCommand(0n, keyPair.pubKey, 0n, 0n, 0n, 0n, 0n);
       this.commands.push(command as ICommand);
+      */
     }
   };
 

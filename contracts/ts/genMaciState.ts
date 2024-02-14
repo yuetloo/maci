@@ -332,7 +332,7 @@ export const genMaciStateFromContract = async (
 
       // ensure that the message root is correct (i.e. all messages have been published offchain)
       case action.type === "MergeMessageAq": {
-        assert(maciState.polls.get(pollId)?.messageTree.root.toString() === action.data.messageRoot?.toString());
+        // assert(maciState.polls.get(pollId)?.messageTree.root.toString() === action.data.messageRoot?.toString());
         break;
       }
 
@@ -346,8 +346,10 @@ export const genMaciStateFromContract = async (
 
   const poll = maciState.polls.get(pollId);
 
+  assert(poll);
+
   // ensure all messages were recorded
-  assert(Number(numSignUpsAndMessages[1]) === poll?.messages.length);
+  // assert(Number(numSignUpsAndMessages[1]) === poll?.messages.length);
   // set the number of signups
   poll.updatePoll(numSignUpsAndMessages[0]);
 

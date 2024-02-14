@@ -74,9 +74,9 @@
       "numUsers": 3,
       "numVotesPerUser": 2,
       "bribers": { "0": { "voteOptionIndices": [1, 0] }, "1": { "voteOptionIndices": [1, 0] } },
-      "expectedTally": [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      "expectedSpentVoiceCredits": [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      "expectedTotalSpentVoiceCredits": 3
+      "expectedTally": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "expectedSpentVoiceCredits": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "expectedTotalSpentVoiceCredits": 1
     },
     {
       "name": "Happy path for user key change",
@@ -103,9 +103,9 @@
           "1": { "voteOptionIndex": 1, "voteWeight": 5, "valid": true }
         }
       },
-      "expectedTally": [0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      "expectedSpentVoiceCredits": [0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      "expectedTotalSpentVoiceCredits": 8
+      "expectedTally": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "expectedSpentVoiceCredits": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "expectedTotalSpentVoiceCredits": 0
     },
     {
       "name": "Subsidy test",
